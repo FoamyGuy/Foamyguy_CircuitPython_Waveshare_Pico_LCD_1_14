@@ -39,6 +39,7 @@ __repo__ = (
 import busio
 import board
 import displayio
+import keypad
 from adafruit_st7789 import ST7789
 
 
@@ -48,13 +49,31 @@ class WavesharePicoLCD114:
 
     """
 
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
+    ENTER = 4
+    A = 5
+    B = 6
+
+    KEY_DICT = {
+        UP: "Up",
+        RIGHT: "Right",
+        DOWN: "Down",
+        LEFT: "Left",
+        A: "A",
+        B: "B",
+        ENTER: "Enter",
+    }
+
     def __init__(self, spi=None, cs=board.GP9, dc=board.GP8, reset=board.GP12):
         displayio.release_displays()
         if not spi:
             self._spi = busio.SPI(board.GP10, board.GP11)
 
         self._display_bus = displayio.FourWire(
-            spi, command=dc, chip_select=cs, reset=reset
+            self._spi, command=dc, chip_select=cs, reset=reset
         )
 
         self.display = ST7789(
@@ -65,3 +84,21 @@ class WavesharePicoLCD114:
             rowstart=40,
             colstart=53,
         )
+        self._keys = keypad.Keys((
+            board.GP2,
+            board.GP20,
+            board.GP18,
+            board.GP16,
+            board.GP3,
+            board.GP15,
+            board.GP17,
+        ), value_when_pressed=False, pull=True)
+
+    def key_events(self):
+        event = self._keys.events.get()
+        if event:
+            #print(event)
+            if event.pressed:
+                print("{} pressed".format(self.KEY_DICT[event.key_number]))
+            if event.released:
+                print("{} released".format(self.KEY_DICT[event.key_number]))
