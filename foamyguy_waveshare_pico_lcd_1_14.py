@@ -96,9 +96,10 @@ class WavesharePicoLCD114:
 
     def key_events(self):
         event = self._keys.events.get()
-        if event:
-            #print(event)
-            if event.pressed:
-                print("{} pressed".format(self.KEY_DICT[event.key_number]))
-            if event.released:
-                print("{} released".format(self.KEY_DICT[event.key_number]))
+        # if event:
+        #     #print(event)
+        #     if event.pressed:
+        #         print("{} pressed".format(self.KEY_DICT[event.key_number]))
+        #     if event.released:
+        #         print("{} released".format(self.KEY_DICT[event.key_number]))
+        return event
